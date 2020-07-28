@@ -42,7 +42,9 @@ import jp.sacredsanctuary.bledemo.util.Preconditions;
  */
 public class BluetoothLowEnergyController {
     private static final String ClassName = BluetoothLowEnergyController.class.getSimpleName();
-
+    // Descriptor UUID for enabling characteristic changed notifications
+    private static final UUID CLIENT_CHARACTERISTIC_CONFIG = UUID.fromString(
+            "00002902-0000-1000-8000-00805f9b34fb");
     private final Context mContext;
     private final BluetoothAdapter mBluetoothAdapter;
     private final BluetoothLeScanner mBluetoothScanner;
@@ -306,8 +308,8 @@ public class BluetoothLowEnergyController {
         }
         mBluetoothGatt.setCharacteristicNotification(characteristic, enabled);
 
-        // This is specific to Heart Rate Measurement.
-        BluetoothGattDescriptor descriptor = characteristic.getDescriptor(characteristic.getUuid());
+        BluetoothGattDescriptor descriptor =
+                characteristic.getDescriptor(CLIENT_CHARACTERISTIC_CONFIG);
         if (Preconditions.checkNotNull(descriptor)) {
             descriptor.setValue(BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE);
             mBluetoothGatt.writeDescriptor(descriptor);
